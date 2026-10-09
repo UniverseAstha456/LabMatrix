@@ -1,6 +1,7 @@
-const router = require("express").Router();
+const router = require('express').Router();
 
-// Authentication routes
-router.use("/auth", require("./auth.routes"));
+router.use('/batches', require('./batch.routes'));
+router.use('/courses', require('./course.routes'));
+// router.use('/auth', require('./auth.routes'));   // your teammate adds this
 
 module.exports = router;
