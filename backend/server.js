@@ -4,9 +4,9 @@ const express = require("express");
 const cors = require("cors");
 
 const db = require("./config/db");
+
 const app = express();
 
-// Middleware
 app.use(cors());
 app.use(express.json());
 
@@ -18,14 +18,14 @@ app.get("/api/health", (req, res) => {
     });
 });
 
-// Root route
+// Root
 app.get("/", (req, res) => {
     res.json({
         message: "LabMatrix API is running"
     });
 });
 
-// Test MySQL connection
+// Database test
 app.get("/api/test-db", async (req, res) => {
     try {
         const [rows] = await db.query("SELECT 1 AS result");
@@ -46,7 +46,12 @@ app.get("/api/test-db", async (req, res) => {
     }
 });
 
-// Start server
+// Register application routes
+app.use("/api", require("./routes"));
+
+// Error-handling middleware must come after routes
+app.use(require("./middleware/errorHandler"));
+
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
