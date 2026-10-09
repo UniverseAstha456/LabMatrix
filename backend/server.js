@@ -2,41 +2,51 @@ require("dotenv").config();
 
 const express = require("express");
 const cors = require("cors");
-require("dotenv").config();
 
 const db = require("./config/db");
 const app = express();
 
+// Middleware
 app.use(cors());
 app.use(express.json());
 
-app.get("/", (req, res) => {
-    res.json({ message: "LabMatrix API is running" });
+// Health check
+app.get("/api/health", (req, res) => {
+    res.status(200).json({
+        success: true,
+        message: "LabMatrix backend is healthy"
+    });
 });
 
-require("dotenv").config();
+// Root route
+app.get("/", (req, res) => {
+    res.json({
+        message: "LabMatrix API is running"
+    });
+});
 
+// Test MySQL connection
 app.get("/api/test-db", async (req, res) => {
     try {
         const [rows] = await db.query("SELECT 1 AS result");
 
-        res.json({
+        res.status(200).json({
             success: true,
             message: "MySQL connected successfully!",
             data: rows
         });
-    } 
-    catch (error) {
-    console.error("MYSQL ERROR:", error);
+    } catch (error) {
+        console.error("MYSQL ERROR:", error);
 
-    res.status(500).json({
-        success: false,
-        message: "Database connection failed",
-        error: error.message
-    });
-}
+        res.status(500).json({
+            success: false,
+            message: "Database connection failed",
+            error: error.message
+        });
+    }
 });
 
+// Start server
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
