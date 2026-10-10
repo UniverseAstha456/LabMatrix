@@ -1,7 +1,9 @@
 import react from '@vitejs/plugin-react'
+import tailwindcss from '@tailwindcss/vite'
 import { defineConfig } from 'vite'
 
-// https://vite.dev/config/
+// The proxy sends /api/* to the Express backend, so no CORS setup is needed.
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), tailwindcss()],
+  server: { proxy: { '/api': 'http://localhost:5000' } },
 })
